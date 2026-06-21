@@ -1,13 +1,28 @@
+import type { Dispatch, SetStateAction } from 'react'
 import { upvoteReason, type Reason, type Results } from '../api'
 
 type Props = {
   reasons: Reason[]
-  onChanged: (results: Results) => void
+  onChanged: Dispatch<SetStateAction<Results | null>>
+}
+
+// Flip one reason's upvote state — used for the instant optimistic update.
+function toggleUpvote(reasons: Reason[], id: number): Reason[] {
+  return reasons.map((r) =>
+    r.id === id
+      ? { ...r, upvotedByMe: !r.upvotedByMe, upvotes: r.upvotes + (r.upvotedByMe ? -1 : 1) }
+      : r,
+  )
 }
 
 export function ReasonLeaderboard({ reasons, onChanged }: Props) {
   async function upvote(id: number) {
-    onChanged(await upvoteReason(id))
+    onChanged((prev) => (prev ? { ...prev, reasons: toggleUpvote(prev.reasons, id) } : prev))
+    try {
+      onChanged(await upvoteReason(id))
+    } catch {
+      onChanged((prev) => (prev ? { ...prev, reasons: toggleUpvote(prev.reasons, id) } : prev))
+    }
   }
 
   return (

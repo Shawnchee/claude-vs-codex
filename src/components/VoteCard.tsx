@@ -1,10 +1,10 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type Dispatch, type FormEvent, type SetStateAction } from 'react'
 import { submitVote, type Choice, type Results } from '../api'
 
 type Props = {
   tally: Results['tally']
   myVote: Choice | null
-  onSubmitted: (results: Results) => void
+  onSubmitted: Dispatch<SetStateAction<Results | null>>
 }
 
 const MAX = 280
@@ -12,6 +12,15 @@ const SIDES: { key: Choice; label: string }[] = [
   { key: 'claude', label: 'Claude' },
   { key: 'codex', label: 'Codex' },
 ]
+
+// Optimistically move the tally for an instant UI response.
+function applyVote(tally: Results['tally'], from: Choice | null, to: Choice): Results['tally'] {
+  if (from === to) return tally
+  const next = { ...tally }
+  if (from) next[from] = Math.max(0, next[from] - 1)
+  next[to] = next[to] + 1
+  return next
+}
 
 export function VoteCard({ tally, myVote, onSubmitted }: Props) {
   // Local selection — initialised from the server's record of your vote, then
@@ -34,6 +43,12 @@ export function VoteCard({ tally, myVote, onSubmitted }: Props) {
     if (!selected || busy) return
     setBusy(true)
     setErr(null)
+    const snapTally = tally
+    const snapMyVote = myVote
+    // Optimistic: reflect the vote instantly, then reconcile with the server.
+    onSubmitted((prev) =>
+      prev ? { ...prev, tally: applyVote(prev.tally, prev.myVote, selected), myVote: selected } : prev,
+    )
     try {
       // One request: casts/changes the vote, (re)posts the reason, returns state.
       const fresh = await submitVote(selected, hasReason ? reason.trim() : undefined)
@@ -41,6 +56,7 @@ export function VoteCard({ tally, myVote, onSubmitted }: Props) {
       onSubmitted(fresh)
     } catch (e) {
       setErr((e as Error).message)
+      onSubmitted((prev) => (prev ? { ...prev, tally: snapTally, myVote: snapMyVote } : prev))
     } finally {
       setBusy(false)
     }
