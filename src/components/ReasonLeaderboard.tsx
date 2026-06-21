@@ -24,7 +24,7 @@ export function ReasonLeaderboard({ reasons, onChanged }: Props) {
               <button
                 className={`upvote ${r.upvotedByMe ? 'active' : ''}`}
                 onClick={() => upvote(r.id)}
-                title={r.upvotedByMe ? 'You upvoted this' : 'Upvote'}
+                title={r.upvotedByMe ? 'Click to remove your upvote' : 'Upvote'}
               >
                 <span className="caret">▲</span>
                 <span>{r.upvotes}</span>
