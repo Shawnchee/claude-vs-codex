@@ -7,20 +7,24 @@ import { ReasonLeaderboard } from './components/ReasonLeaderboard'
 export default function App() {
   const [results, setResults] = useState<Results | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
 
   async function refresh() {
+    setRefreshing(true)
     try {
       setResults(await fetchResults())
       setError(null)
     } catch (e) {
       setError((e as Error).message)
+    } finally {
+      setRefreshing(false)
     }
   }
 
+  // Load once. Your own votes/upvotes update optimistically; tap Refresh to
+  // pull in other people's changes (no constant polling = far fewer DB reads).
   useEffect(() => {
     refresh()
-    const timer = setInterval(refresh, 5000) // keep the tallies feeling live
-    return () => clearInterval(timer)
   }, [])
 
   return (
@@ -46,7 +50,12 @@ export default function App() {
       ) : (
         <>
           <VoteCard tally={results.tally} myVote={results.myVote} onSubmitted={setResults} />
-          <ReasonLeaderboard reasons={results.reasons} onChanged={setResults} />
+          <ReasonLeaderboard
+            reasons={results.reasons}
+            onChanged={setResults}
+            onRefresh={refresh}
+            refreshing={refreshing}
+          />
         </>
       )}
 
