@@ -31,6 +31,11 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
+        <div className="header-logos">
+          <img src="/claude.png" alt="Claude" />
+          <span className="vs">vs</span>
+          <img src="/codex.png" alt="Codex" />
+        </div>
         <h1>
           Claude <span className="vs">vs</span> Codex
         </h1>

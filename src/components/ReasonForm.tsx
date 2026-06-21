@@ -42,6 +42,7 @@ export function ReasonForm({ defaultChoice, onPosted }: Props) {
           className={choice === 'claude' ? 'active claude' : ''}
           onClick={() => setChoice('claude')}
         >
+          <img className="toggle-logo" src="/claude.png" alt="" />
           Claude
         </button>
         <button
@@ -49,6 +50,7 @@ export function ReasonForm({ defaultChoice, onPosted }: Props) {
           className={choice === 'codex' ? 'active codex' : ''}
           onClick={() => setChoice('codex')}
         >
+          <img className="toggle-logo" src="/codex.png" alt="" />
           Codex
         </button>
       </div>

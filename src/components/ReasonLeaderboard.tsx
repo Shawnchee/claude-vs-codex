@@ -30,7 +30,10 @@ export function ReasonLeaderboard({ reasons, onChanged }: Props) {
                 <span>{r.upvotes}</span>
               </button>
               <div className="reason-body">
-                <span className={`badge ${r.choice}`}>{r.choice}</span>
+                <span className={`badge ${r.choice}`}>
+                  <img className="badge-logo" src={`/${r.choice}.png`} alt="" />
+                  {r.choice}
+                </span>
                 <p>{r.body}</p>
               </div>
             </li>

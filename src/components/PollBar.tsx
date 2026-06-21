@@ -25,6 +25,7 @@ export function PollBar({ tally, myVote, onVote }: Props) {
           onClick={() => onVote('claude')}
           disabled={voted}
         >
+          <img className="logo" src="/claude.png" alt="" />
           <span className="name">Claude</span>
           <span className="count">
             {pct(tally.claude)}% · {tally.claude}
@@ -35,6 +36,7 @@ export function PollBar({ tally, myVote, onVote }: Props) {
           onClick={() => onVote('codex')}
           disabled={voted}
         >
+          <img className="logo" src="/codex.png" alt="" />
           <span className="name">Codex</span>
           <span className="count">
             {pct(tally.codex)}% · {tally.codex}
