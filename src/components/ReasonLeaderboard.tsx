@@ -1,14 +1,13 @@
-import { upvoteReason, type Reason } from '../api'
+import { upvoteReason, type Reason, type Results } from '../api'
 
 type Props = {
   reasons: Reason[]
-  onChanged: () => void
+  onChanged: (results: Results) => void
 }
 
 export function ReasonLeaderboard({ reasons, onChanged }: Props) {
   async function upvote(id: number) {
-    await upvoteReason(id)
-    onChanged()
+    onChanged(await upvoteReason(id))
   }
 
   return (

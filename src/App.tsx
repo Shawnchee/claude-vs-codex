@@ -45,8 +45,8 @@ export default function App() {
         <p className="muted center">Loading…</p>
       ) : (
         <>
-          <VoteCard tally={results.tally} myVote={results.myVote} onSubmitted={refresh} />
-          <ReasonLeaderboard reasons={results.reasons} onChanged={refresh} />
+          <VoteCard tally={results.tally} myVote={results.myVote} onSubmitted={setResults} />
+          <ReasonLeaderboard reasons={results.reasons} onChanged={setResults} />
         </>
       )}
 

@@ -15,6 +15,9 @@ create table if not exists reasons (
   created_at  text not null default (datetime('now'))
 );
 
+-- one reason per browser — re-submitting replaces it in place
+create unique index if not exists idx_reasons_author on reasons(author_hash);
+
 -- one row per upvote => dedup is built in, and the count never drifts
 create table if not exists reason_upvotes (
   reason_id  integer not null references reasons(id) on delete cascade,

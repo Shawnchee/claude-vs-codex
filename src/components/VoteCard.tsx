@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react'
-import { castVote, postReason, type Choice, type Results } from '../api'
+import { submitVote, type Choice, type Results } from '../api'
 
 type Props = {
   tally: Results['tally']
   myVote: Choice | null
-  onSubmitted: () => void
+  onSubmitted: (results: Results) => void
 }
 
 const MAX = 280
@@ -35,12 +35,10 @@ export function VoteCard({ tally, myVote, onSubmitted }: Props) {
     setBusy(true)
     setErr(null)
     try {
-      await castVote(selected) // upsert — casts or changes your vote
-      if (hasReason) {
-        await postReason(selected, reason.trim())
-        setReason('')
-      }
-      onSubmitted()
+      // One request: casts/changes the vote, (re)posts the reason, returns state.
+      const fresh = await submitVote(selected, hasReason ? reason.trim() : undefined)
+      if (hasReason) setReason('')
+      onSubmitted(fresh)
     } catch (e) {
       setErr((e as Error).message)
     } finally {
