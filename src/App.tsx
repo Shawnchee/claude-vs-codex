@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { castVote, fetchResults, type Choice, type Results } from './api'
-import { PollBar } from './components/PollBar'
-import { ReasonForm } from './components/ReasonForm'
+import { fetchResults, type Results } from './api'
+import { VoteCard } from './components/VoteCard'
 import { ReasonLeaderboard } from './components/ReasonLeaderboard'
 
 export default function App() {
@@ -22,11 +21,6 @@ export default function App() {
     const timer = setInterval(refresh, 5000) // keep the tallies feeling live
     return () => clearInterval(timer)
   }, [])
-
-  async function onVote(choice: Choice) {
-    await castVote(choice)
-    refresh()
-  }
 
   return (
     <div className="app">
@@ -50,8 +44,7 @@ export default function App() {
         <p className="muted center">Loading…</p>
       ) : (
         <>
-          <PollBar tally={results.tally} myVote={results.myVote} onVote={onVote} />
-          <ReasonForm defaultChoice={results.myVote ?? 'claude'} onPosted={refresh} />
+          <VoteCard tally={results.tally} myVote={results.myVote} onSubmitted={refresh} />
           <ReasonLeaderboard reasons={results.reasons} onChanged={refresh} />
         </>
       )}

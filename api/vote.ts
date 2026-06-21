@@ -8,10 +8,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!isChoice(choice)) return res.status(400).json({ error: 'Invalid choice' })
 
   const voter = getVoterHash(req)
-  // One vote per voter — silently ignore repeat votes.
+  // One row per voter, but they can change their vote — upsert the choice.
   await db.execute({
     sql: `insert into votes (choice, voter_hash) values (?, ?)
-          on conflict (voter_hash) do nothing`,
+          on conflict (voter_hash) do update set choice = excluded.choice`,
     args: [choice, voter],
   })
 
