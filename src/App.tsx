@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { fetchResults, type Results } from './api'
 import { VoteCard } from './components/VoteCard'
 import { ReasonLeaderboard } from './components/ReasonLeaderboard'
@@ -50,6 +51,7 @@ export default function App() {
       )}
 
       <footer className="footer">Fun, anonymous poll · one vote per browser</footer>
+      <Analytics />
     </div>
   )
 }
