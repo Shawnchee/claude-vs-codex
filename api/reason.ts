@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { db, getVoterHash, isChoice } from './_db'
+import { db, getVoterHash, isChoice } from './_db.js'
 
 const MAX_LEN = 280
 
